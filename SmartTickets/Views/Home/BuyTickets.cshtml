@@ -1,7 +1,38 @@
-﻿
+﻿@model List<SmartTickets.Models.Event>
 @{
     ViewBag.Title = "BuyTickets";
 }
+<h2>Список событий</h2>
+<form method="get">
+    <div>
+        <label>Разделы: </label>
+        @Html.DropDownList("categoryId", ViewBag.Categories as SelectList)
+        <input type="submit" value="Фильтр" />
+    </div>
+</form>
 
-<h2>BuyTickets</h2>
+@for (int i = 0; i < Model.Count; i += 1)
+{
+
+<div>
+    <br>
+    <table>
+        <tr>
+            <td >
+                <img src="@Url.Content("~/Images/")@Model[i].ImageUrl" width="150" height="200" />
+            </td>
+            <td style="width:100%">
+                <ul>
+                    <li class="list-group-item">@Model[i].Artist. @Model[i].Name</li>
+                    <li class="list-group-item">@Model[i].Date</li>
+                    <li class="list-group-item">@Model[i].City @Model[i].Place</li>
+                    <li class="list-group-item">@Model[i].Price</li>
+                </ul>
+                <a href="#">Купить</a>
+            </td>
+        </tr>
+    </table>
+</div>
+}
+
 
