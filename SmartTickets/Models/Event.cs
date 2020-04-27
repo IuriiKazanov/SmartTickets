@@ -44,7 +44,7 @@ namespace SmartTickets.Models
         [Required]
         [Range(0, 5, ErrorMessage = "Недопустимое количество")]
         [Display(Name = "Количество")]
-        public int Tickets_count { get; set; }
+        public int Count { get; set; }
 
         [Display(Name = "Категория")]
         public Category Category { get; set; }

@@ -32,7 +32,7 @@ namespace SmartTickets.Controllers
 
             var list = events.ToList();
 
-            return View(events.ToList());
+            return View(list);
         }
 
         public ActionResult ChangeTickets()
@@ -44,7 +44,6 @@ namespace SmartTickets.Controllers
 
         public ActionResult MyTickets()
         {
-            ViewBag.Message = "Your tickets";
 
             return View();
         }

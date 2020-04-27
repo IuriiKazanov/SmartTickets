@@ -16,5 +16,8 @@ namespace SmartTickets.Models
 
         public DbSet<Event> Events { get; set; }
         public DbSet<Category> Categories { get; set; }
+
+
+        public DbSet<ItemEvent> ItemEvents { get; set; }
     }
 }

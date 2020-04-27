@@ -1,0 +1,39 @@
+﻿@model SmartTickets.Models.ItemEvent
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>@User.Identity.GetUserName()</h2>
+<h2>@Model.Event.Artist</h2>
+<h2>@Model.Event.Name</h2>
+<h2>@Model.Event.City</h2>
+
+<p><span id="totalCount"></span><br></p>
+
+<input type="number" value=@Model.Quantity min=1 max=5 onchange="onItemQuantityChanged(@Model.EventId, this)" />
+<p>Общая стоимость: <span id="totalCost">@ViewBag.Sum</span></p>
+
+<br />
+@Html.RouteLink("Оформить заказ",
+      new { controller = "Cart", action = "Pay", email = @User.Identity.GetUserName(), count = @Model.Quantity, eventId = Model.EventId })
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    function onItemQuantityChanged(eventId, elem) {
+        axios.post(
+            "/Cart/ChangeItemQuantity",
+            {
+                eventId: eventId,
+                newQuantity: parseInt(elem.value, 10)
+            }
+        ).then((delta) => {
+            if (elem.value == 5)
+                $("#totalCount").text("Максимальное количество билетов при покупке за один заказ - 5");
+            else $("#totalCount").text("\n");
+            var totalCost = parseInt($("#totalCost").text(), 10);
+            totalCost += delta.data;
+            $("#totalCost").text(totalCost.toString());
+        });
+}</script>
