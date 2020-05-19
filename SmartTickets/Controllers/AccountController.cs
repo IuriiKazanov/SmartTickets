@@ -73,12 +73,21 @@ namespace SmartTickets.Controllers
                 return View(model);
             }
 
-            // Сбои при входе не приводят к блокированию учетной записи
-            // Чтобы ошибки при вводе пароля инициировали блокирование учетной записи, замените на shouldLockout: true
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
+                    ApplicationUser user = UserManager.FindByEmail(model.Email);
+                    if (UserManager.IsInRole(user.Id, "admin"))
+                    {
+                        return RedirectToActionPermanent("Index", "Admin");
+                    }
+                    if (UserManager.IsInRole(user.Id, "manager"))
+                    {
+                        return RedirectToActionPermanent("Index", "Event");
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -86,7 +95,7 @@ namespace SmartTickets.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Неудачная попытка входа.");
+                    ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
         }

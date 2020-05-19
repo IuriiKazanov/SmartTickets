@@ -1,9 +1,9 @@
-﻿
+﻿@model SmartTickets.Models.Order
 @{
     ViewBag.Title = "Pay";
 }
 
-<h2>@ViewBag.Msg</h2>
+<h2>@Model.EventId</h2>
 <h2>Оплата прошла успешно</h2>
-@Html.RouteLink("Перейти на главную", new { controller =  "Home", action =  "Index" })
+@Html.RouteLink("Перейти на главную", new { controller = "Home", action = "Index" })
 

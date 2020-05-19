@@ -22,6 +22,9 @@ namespace SmartTickets.Models
         [Display(Name = "Количество")]
         public int Quantity { get; set; }
 
+        [HiddenInput(DisplayValue = false)]
+        public string Email { get; set; }
+
         public Event Event { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using SmartTickets.Models;
+using Microsoft.AspNet.Identity;
 
 namespace SmartTickets.Controllers
 {
@@ -37,15 +38,18 @@ namespace SmartTickets.Controllers
 
         public ActionResult ChangeTickets()
         {
-            ViewBag.Message = "Change tickets";
+            var email = User.Identity.GetUserName();
+            var itemTickets = db.Orders.Where(x => x.Email == email).ToList();
 
-            return View();
+            return View(itemTickets);
         }
 
         public ActionResult MyTickets()
         {
+            var email = User.Identity.GetUserName();
+            var itemTickets = db.Orders.Where(x => x.Email == email).ToList();
 
-            return View();
+            return View(itemTickets);
         }
 
         public ActionResult Contact()

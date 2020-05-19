@@ -1,0 +1,21 @@
+﻿@model SmartTickets.Models.Order
+@{
+    ViewBag.Title = "Change";
+}
+
+<h2>@Model.EventId</h2>
+<h2>@Model.Email</h2>
+<h2>@Model.Count</h2>
+
+@using (Html.BeginForm("Sell", "Change"))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    <input id="id" name="id" type="hidden" value=@Model.Id />
+    <h4>Введите количество:</h4>
+    <input type="number" id="count" name="count" min="1" max=@Model.Count>
+    <h4>Введите цену:</h4>
+    @Html.TextBox("price")
+    <input type="submit" value="OK" class="btn btn-default" />
+</div>
+}

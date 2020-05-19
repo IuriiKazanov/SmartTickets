@@ -5,26 +5,17 @@ using System.Web;
 using System.Web.Mvc;
 using SmartTickets.Models;
 using System.Data.Entity;
-
+using System.Globalization;
 
 namespace SmartTickets.Controllers
 {
     public class CartController : Controller
     {
         TicketsContext db = new TicketsContext();
-        string GetCooki(string key)
-        {
-            if (HttpContext.Request.Cookies.AllKeys.Length > 0 &&
-                HttpContext.Request.Cookies.AllKeys.Contains(key))
-            {
-                return HttpContext.Request.Cookies[key].Value;
-            }
-            return null;
-        }
 
-        public ActionResult Add(int eventId)
+        public ActionResult Add(int eventId, string email)
         {
-            var items = db.ItemEvents.Where(x => x.EventId == eventId).ToList();
+            var items = db.ItemEvents.Where(x => x.EventId == eventId && x.Email == email).ToList();
             ItemEvent item = new ItemEvent();
             if (items.Count() > 0)
             {
@@ -35,6 +26,7 @@ namespace SmartTickets.Controllers
             {
                 item.EventId = eventId;
                 item.Quantity = 1;
+                item.Email = email;
                 db.ItemEvents.Add(item);
             }
             db.SaveChanges();
@@ -52,20 +44,53 @@ namespace SmartTickets.Controllers
             return View(item);
         }
 
-        public ActionResult Pay(string email, int count, int? eventId)
+        public ActionResult Pay(string email, int eventId)
         {
-            if (eventId != null)
+            var list = db.Orders.Where(x => x.Email == email && x.EventId == eventId).ToList();
+            int itemCount;
+            ItemEvent itemEvent;
+            if (list.Count() > 0)
             {
-                Event item = db.Events.First(x => x.Id == eventId);
-
-                return View();
+                var item = list.First();
+                itemEvent = db.ItemEvents.First(x => x.EventId == eventId && x.Email == email);
+                itemCount = itemEvent.Quantity;
+                if (item.Count + itemCount > 5)
+                {
+                    return RedirectToAction("Error", "Cart", item);
+                }
+                item.Count += itemCount;
+                item.Date = DateTime.Now;
+                db.Entry(item).State = EntityState.Modified;
+                db.Events.First(x => x.Id == eventId).Count -= itemCount;
+                db.ItemEvents.Remove(itemEvent);
+                db.SaveChanges();
+                return View(item);
             }
-            return HttpNotFound();
+            itemEvent = db.ItemEvents.First(x => x.EventId == eventId && x.Email == email);
+            itemCount = itemEvent.Quantity;
+            Order order = new Order();
+            order.Email = email;
+            order.EventId = eventId;
+            order.Count = itemCount;
+            order.Number = (email + (eventId*100).ToString() + itemCount.ToString()).GetHashCode().ToString();
+            order.Date = DateTime.Now;
+            db.Events.First(x => x.Id == eventId).Count -= itemCount;
+            db.Orders.Add(order);
+            db.ItemEvents.Remove(itemEvent);
+            db.SaveChanges();
+            return View(order);
         }
+
+        public ActionResult Error(Order item)
+        {
+            
+            return View(item);
+        }
+
 
         [HttpPost]
         public ActionResult ChangeItemQuantity(int eventId, int newQuantity)
-         {
+        {
             var item = db.ItemEvents.First(x => x.EventId == eventId);
             var _event = db.Events.First(x => x.Id == eventId);
             var delta = (newQuantity - item.Quantity) * _event.Price;

@@ -42,7 +42,7 @@ namespace SmartTickets.Models
         public decimal Price { get; set; }
 
         [Required]
-        [Range(0, 5, ErrorMessage = "Недопустимое количество")]
+        [Range(0, 500000, ErrorMessage = "Недопустимое количество")]
         [Display(Name = "Количество")]
         public int Count { get; set; }
 

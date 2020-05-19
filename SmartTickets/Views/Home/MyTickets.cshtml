@@ -1,8 +1,31 @@
-﻿
+﻿@model List<SmartTickets.Models.Order>
+@using SmartTickets.Models;
 @{
     ViewBag.Title = "MyTickets";
+    
 }
+<h2>Ваши билеты</h2>
 
-<h2>Ваши билеты: </h2>
-
-
+@for (int i = 0; i < Model.Count; i += 1)
+{
+    TicketsContext db = new TicketsContext();
+    var event_ = db.Events.Find(Model[i].EventId);
+    <div>
+        <br>
+        <table>
+            <tr>
+                <td>
+                    <img src="@Url.Content("~/Images/")@event_.ImageUrl" width="150" height="200" />
+                </td>
+                <td style="width:100%">
+                    <ul>
+                        <li class="list-group-item">@event_.Artist. @event_.Name</li>
+                        <li class="list-group-item">@event_.Date</li>
+                        <li class="list-group-item">@event_.City @event_.Place</li>
+                        <li class="list-group-item">Ваших билетов: @Model[i].Count</li>
+                    </ul>
+                </td>
+            </tr>
+        </table> 
+    </div>
+}

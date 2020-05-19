@@ -1,7 +1,40 @@
-﻿
+﻿@model List<SmartTickets.Models.Order>
+@using SmartTickets.Models;
 @{
     ViewBag.Title = "ChangeTickets";
 }
+<br>
+@Html.RouteLink("Продать",
+      new { controller = "Home", action = "ChangeTickets" })
+@Html.RouteLink("Купить",
+      new { controller = "Change", action = "NewChange"})
+<h2>Ваши билеты</h2>
 
-<h2>ChangeTickets</h2>
-
+@for (int i = 0; i < Model.Count; i += 1)
+{
+    TicketsContext db = new TicketsContext();
+    var event_ = db.Events.Find(Model[i].EventId);
+<div>
+    <br>
+    <table>
+        <tr>
+            <td>
+                <img src="@Url.Content("~/Images/")@event_.ImageUrl" width="150" height="200" />
+            </td>
+            <td style="width:100%">
+                <div>
+                    <ul>
+                        <li class="list-group-item">@event_.Artist. @event_.Name</li>
+                        <li class="list-group-item">@event_.Date</li>
+                        <li class="list-group-item">@event_.City @event_.Place</li>
+                        <li class="list-group-item">Ваших билетов: @Model[i].Count</li>
+                    </ul>
+                    <a href="#" style="margin-left: 50px">
+                        @Html.RouteLink("Продать", new { controller = "Change", action = "Index", id = @Model[i].Id })
+                    </a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+}

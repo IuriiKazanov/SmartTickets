@@ -7,9 +7,6 @@
 
     <ul class="nav navbar-nav navbar-right">
         <li>
-            <a href='@Url.Action("Index", "Cart")'><img src='~/Images/Basket2.png' width="27" height="22"/></a>
-        </li>
-        <li>
             @Html.ActionLink("Здравствуйте, " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Выйти</a></li>
