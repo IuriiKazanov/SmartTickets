@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using SmartTickets.Models;
 using System.Data.Entity;
 using System.Globalization;
+using Microsoft.AspNet.Identity;
+
 
 namespace SmartTickets.Controllers
 {
@@ -13,8 +15,9 @@ namespace SmartTickets.Controllers
     {
         TicketsContext db = new TicketsContext();
 
-        public ActionResult Add(int eventId, string email)
+        public ActionResult Add(int eventId)
         {
+            var email = User.Identity.GetUserName();
             var items = db.ItemEvents.Where(x => x.EventId == eventId && x.Email == email).ToList();
             ItemEvent item = new ItemEvent();
             if (items.Count() > 0)
@@ -44,8 +47,9 @@ namespace SmartTickets.Controllers
             return View(item);
         }
 
-        public ActionResult Pay(string email, int eventId)
+        public ActionResult Pay(int eventId)
         {
+            var email = User.Identity.GetUserName();
             var list = db.Orders.Where(x => x.Email == email && x.EventId == eventId).ToList();
             int itemCount;
             ItemEvent itemEvent;
@@ -78,7 +82,7 @@ namespace SmartTickets.Controllers
             db.Orders.Add(order);
             db.ItemEvents.Remove(itemEvent);
             db.SaveChanges();
-            return View(order);
+            return View();
         }
 
         public ActionResult Error(Order item)

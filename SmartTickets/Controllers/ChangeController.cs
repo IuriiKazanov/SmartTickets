@@ -27,7 +27,7 @@ namespace SmartTickets.Controllers
             var email = User.Identity.GetUserName();
             var changes = db.TicketsToChange.Where(x => x.Email != email).ToList();
 
-            return  View(changes);
+            return View(changes);
         }
 
         public ActionResult Sell(int id, int count, string price)
@@ -48,6 +48,22 @@ namespace SmartTickets.Controllers
             }
             db.SaveChanges();
             return View(item);
+        }
+        public ActionResult Buy(int changeId)
+        {
+            var email = User.Identity.GetUserName();
+            var change = db.TicketsToChange.First(x => x.Id == changeId);
+            Order order = new Order();
+            order.Email = email;
+            order.EventId = change.EventId;
+
+            order.Count = change.Count;
+            order.Number = (email + (change.EventId * 100).ToString() + change.Count.ToString()).GetHashCode().ToString();
+            order.Date = DateTime.Now;
+            db.Orders.Add(order);
+            db.TicketsToChange.Remove(change);
+            db.SaveChanges();
+            return View();
         }
     }
 }

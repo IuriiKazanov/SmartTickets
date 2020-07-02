@@ -1,6 +1,7 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
+
 [assembly: OwinStartupAttribute(typeof(SmartTickets.Startup))]
 namespace SmartTickets
 {
@@ -9,6 +10,7 @@ namespace SmartTickets
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿@model List<SmartTickets.Models.Event>
+
+@{
+    ViewBag.Title = "Search";
+}
+<br />
+@ViewBag.Message
+@for (int i = 0; i < Model.Count; i += 1)
+{
+    <div>
+        <br>
+        <table>
+            <tr>
+                <td>
+                    <img src="@Url.Content("~/Images/")@Model[i].ImageUrl" width="150" height="200" />
+                </td>
+                <td style="width:100%">
+                    <ul>
+                        @{
+                            if (Model[i].Artist.IsEmpty())
+                            {
+                                <li class="list-group-item">
+                                    @Model[i].Name
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="list-group-item">
+                                    @Model[i].Artist. @Model[i].Name
+                                </li>
+                            }
+                        }
+                        <li class="list-group-item">@Model[i].Date</li>
+                        <li class="list-group-item">@Model[i].City @Model[i].Place</li>
+                        <li class="list-group-item">Осталось @Model[i].Count  билетов, цена от: @Model[i].Price</li>
+                    </ul>
+                    <a href="#" style="margin-left: 50px">
+                        @Html.RouteLink("Купить", new { controller = "Cart", action = "Add", eventId = @Model[i].Id })
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+
